@@ -1,0 +1,4 @@
+.vscode/
+commands/
+node_modules/
+*.log

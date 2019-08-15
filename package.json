@@ -1,0 +1,25 @@
+{
+  "name": "aws-elasticsearch-reindex",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Helper for executing /reindex",
+  "bin": {
+    "aws-elasticsearch-reindex": "./bin/aws-elasticsearch-reindex"
+  },
+  "main": "src/handler.js",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "author": "Jeff Ashton",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.510.0",
+    "lodash": "^4.17.15",
+    "pino": "^5.13.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
+}

@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const _ = require( 'lodash' );
+const AwsElasticsearchClient = require( '../src/awsElasticsearchClient.js' );
+const Handler = require( '../src/handler.js' );
+const pino = require( 'pino' );
+
+const awsRegion = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
+if( !awsRegion ) {
+	console.error( 'AWS_REGION not set' );
+	process.exit( 1 );
+}
+
+function showUsage( message ) {
+
+	console.error( message );
+	console.error( `
+Usage: aws-elasticsearch-reindex <elasticsearchUrl> <commandPath>
+
+	commandPath: Path to the file which defines reindex command(s).
+	` );
+
+	process.exit( 2 );
+}
+
+const elasticsearchUrl = process.argv[ 2 ];
+if( !elasticsearchUrl ) {
+	return showUsage( 'elasticsearchUrl not specified' );
+}
+
+const path = process.argv[ 3 ];
+if( !path ) {
+	return showUsage( 'commandPath not specified' );
+}
+
+const elasticsearch = new AwsElasticsearchClient(
+	awsRegion,
+	elasticsearchUrl
+);
+
+const log = pino( {
+	base: null,
+	level: process.env.LOG_LEVEL || 'info',
+	timestamp: false
+} );
+
+const handler = new Handler(
+	elasticsearch,
+	log
+);
+
+return handler.handleAsync( path )
+	.then( result => {
+		console.log( result.outputPath );
+		process.exit( result.errors );
+	} )
+	.catch( err => {
+		log.error( { err }, 'failed to create reindex tasks' );
+		process.exit( 100 );
+	} );
