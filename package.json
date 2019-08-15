@@ -9,6 +9,10 @@
   "scripts": {
     "lint": "eslint ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JeffAshton/aws-elasticsearch-reindex.git"
+  },
   "author": "Jeff Ashton",
   "license": "MIT",
   "dependencies": {
