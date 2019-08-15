@@ -2,11 +2,11 @@
   "name": "aws-elasticsearch-reindex",
   "private": true,
   "version": "0.0.0",
-  "description": "Helper for executing /reindex",
+  "description": "Command line tool for starting reindex tasks in aws eleasticsearch",
   "bin": {
-    "aws-elasticsearch-reindex": "./bin/aws-elasticsearch-reindex"
+    "aws-elasticsearch-reindex": "./bin/aws-elasticsearch-reindex",
+    "aws-elasticsearch-reindex-waiter": "./bin/aws-elasticsearch-reindex-waiter"
   },
-  "main": "src/handler.js",
   "scripts": {
     "lint": "eslint ."
   },
@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.510.0",
+    "bluebird": "^3.5.5",
     "lodash": "^4.17.15",
     "pino": "^5.13.2",
     "request": "^2.88.0",

@@ -2,7 +2,7 @@
 
 const _ = require( 'lodash' );
 const AwsElasticsearchClient = require( '../src/AwsElasticsearchClient.js' );
-const Reindexer = require( '../src/Reindexer.js' );
+const ReindexTaskWaiter = require( '../src/ReindexTaskWaiter.js' );
 const pino = require( 'pino' );
 
 const awsRegion = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
@@ -15,9 +15,9 @@ function showUsage( message ) {
 
 	console.error( message );
 	console.error( `
-Usage: aws-elasticsearch-reindex <elasticsearchUrl> <commandPath>
+Usage: aws-elasticsearch-reindex-waiter <elasticsearchUrl> <tasksPath>
 
-	commandPath: Path to the file which defines reindex command(s).
+	tasksPath: Path to the file which defines reindex task ids.
 	` );
 
 	process.exit( 2 );
@@ -30,7 +30,7 @@ if( !elasticsearchUrl ) {
 
 const path = process.argv[ 3 ];
 if( !path ) {
-	return showUsage( 'commandPath not specified' );
+	return showUsage( 'tasksPath not specified' );
 }
 
 const elasticsearch = new AwsElasticsearchClient(
@@ -44,17 +44,16 @@ const log = pino( {
 	timestamp: false
 } );
 
-const reindexer = new Reindexer(
+const waiter = new ReindexTaskWaiter(
 	elasticsearch,
 	log
 );
 
-return reindexer.reindex( path )
+return waiter.waitOnTasks( path )
 	.then( result => {
-		console.log( result.outputPath );
 		process.exit( result.errorCount );
 	} )
 	.catch( err => {
-		log.error( { err }, 'failed to create reindex tasks' );
+		log.error( { err }, 'failed to wait on reindex tasks' );
 		process.exit( 100 );
 	} );

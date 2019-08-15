@@ -27,8 +27,7 @@ module.exports = class Handler {
 		this.log = log;
 	}
 
-	async handleAsync( path ) {
-		const log = this.log;
+	async reindex( path ) {
 
 		const json = await fs.readFile( path, { encoding: 'utf8' } );
 		const commands = JSON.parse( json );
@@ -36,14 +35,14 @@ module.exports = class Handler {
 		let taskIds = [];
 		let errors = 0;
 
-		const reindexHelper = async ( command ) => {
+		const createTaskHelper = async ( command ) => {
 
 			try {
-				const taskId = await this.reindex( command );
+				const taskId = await this.createTask( command );
 				taskIds.push( taskId );
 
 			} catch( err ) {
-				log.error( { err, command }, 'failed to create reindex task' );
+				this.log.error( { err, command }, 'failed to create reindex task' );
 				errors++;
 			}
 		};
@@ -51,30 +50,30 @@ module.exports = class Handler {
 		if( _.isArray( commands ) ) {
 
 			for( const command of commands ) {
-				await reindexHelper( command );
+				await createTaskHelper( command );
 			}
 
 		} else if( _.isString( commands ) ) {
-			await reindexHelper( commands );
+			await createTaskHelper( commands );
 
 		} else {
 			throw new Error( 'invalid commands document' );
 		}
 
-		log.info( { taskIds }, 'created reindex tasks' );
+		this.log.info( { taskIds }, 'created reindex tasks' );
 
 		const outputPath = getOutputPath( path );
 		const taskIdsJson = JSON.stringify( taskIds, null, '\t' );
-		log.debug( { outputPath }, 'writing task ids output file' );
+		this.log.debug( { outputPath }, 'writing task ids output file' );
 		await fs.writeFile( outputPath, taskIdsJson );
 
 		return {
-			outputPath,
-			errors
+			outputPath: outputPath,
+			errorCount: errors
 		};
 	}
 
-	async reindex( command ) {
+	async createTask( command ) {
 
 		const sourceIndex = _.get( command, 'source.index' );
 		if( !sourceIndex ) {
@@ -110,20 +109,5 @@ module.exports = class Handler {
 		}
 
 		return taskId;
-	}
-
-	async getTask( taskId ) {
-
-		const request = {
-			method: 'GET',
-			url: `/_tasks/${ encodeURIComponent( taskId ) }`,
-			json: true
-		};
-
-		this.log.debug( { request }, 'getting task from elasticserach' );
-		const response = await this.elasticsearch.sendAsync( request );
-		this.log.debug( { response }, 'got task from elasticserach' );
-
-		return response;
 	}
 };
