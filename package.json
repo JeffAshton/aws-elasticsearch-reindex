@@ -1,8 +1,7 @@
 {
   "name": "aws-elasticsearch-reindex",
-  "private": true,
   "version": "0.0.0",
-  "description": "Command line tool for starting reindex tasks in aws eleasticsearch",
+  "description": "Command line tools for reindexing in aws eleasticsearch",
   "bin": {
     "aws-elasticsearch-reindex": "./bin/aws-elasticsearch-reindex",
     "aws-elasticsearch-reindex-waiter": "./bin/aws-elasticsearch-reindex-waiter"
