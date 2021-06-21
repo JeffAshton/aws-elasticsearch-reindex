@@ -1,6 +1,6 @@
 {
   "name": "aws-elasticsearch-reindex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Command line tools for reindexing in aws eleasticsearch",
   "bin": {
     "aws-elasticsearch-reindex": "./bin/aws-elasticsearch-reindex",
@@ -16,14 +16,14 @@
   "author": "Jeff Ashton",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.523.0",
-    "bluebird": "^3.5.5",
-    "lodash": "^4.17.15",
-    "pino": "^5.13.2",
+    "aws-sdk": "^2.931.0",
+    "bluebird": "^3.7.2",
+    "lodash": "^4.17.21",
+    "pino": "^6.11.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
   "devDependencies": {
-    "eslint": "^5.16.0"
+    "eslint": "^7.29.0"
   }
 }

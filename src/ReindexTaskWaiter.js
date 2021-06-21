@@ -103,7 +103,17 @@ module.exports = class Handler {
 				};
 
 			} else {
-				this.log.info( { taskId }, 'task still executing' );
+
+				const status = task.task.status;
+				const progress = Math.round( status.created / status.total * 100 );
+
+				this.log.info(
+					{
+						taskId,
+						progress: `${progress}%`
+					},
+					'task still executing'
+				);
 			}
 
 			await Promise.delay( 5000 );
