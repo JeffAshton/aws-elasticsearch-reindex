@@ -24,7 +24,7 @@ function validateTaskResponse( response, log ) {
 	}
 
 	if ( versionConflicts > 0 ) {
-		log.error( { failures }, 'task had version conflicts' );
+		log.error( { versionConflicts }, 'task had version conflicts' );
 		return false;
 	}
 	
